@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.javaee.lqsx.asset.mapper.ReturnsMapper" >
+
+    <resultMap id="BaseResultMap" type="com.javaee.lqsx.asset.po.Returns">
+        <id column="id" jdbcType="VARCHAR" property="id" />
+        <result column="aid" jdbcType="VARCHAR" property="aid" />
+        <result column="uid" jdbcType="VARCHAR" property="uid" />
+        <result column="return_time" jdbcType="VARCHAR" property="returnTime" />
+        <result column="status" jdbcType="VARCHAR" property="status" />
+        <result column="create_time" jdbcType="VARCHAR" property="createTime" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,
+        aid,
+        uid,
+        return_time,
+        status,
+        create_time
+    </sql>
+
+
+    <!--分页查询-->
+    <select id="getReturnsList" parameterType="Integer" resultType="com.javaee.lqsx.asset.po.Returns">
+    select
+    r.id,
+    r.aid,
+    r.uid,
+    r.return_time returnTime,
+    r.status,
+    r.create_time createTime,
+    a.name aname,
+    u.name uname
+    from returns r left join assets a on r.aid = a.id left join user u on r.uid = u.id
+    where 1=1
+    <if test="aid != null and aid != ''">
+        and r.aid = #{aid}
+    </if>
+    <if test="uid != null and uid != ''">
+        and r.uid = #{uid}
+    </if>
+    <if test="mid != null and mid != ''">
+        and a.mid = #{mid}
+    </if>
+    order by r.create_time desc
+    limit #{currentPage},#{pageSize}
+    </select>
+
+
+    <!--查询总数-->
+    <select id="totalCount"  resultType="Integer">
+    select count(id) from returns
+    </select>
+
+
+    <!--添加-->
+    <insert id="addReturns" parameterType="com.javaee.lqsx.asset.po.Returns" keyProperty="id" useGeneratedKeys="true">
+    insert into returns (
+    id,
+    aid,
+    uid,
+    return_time,
+    status,
+    create_time
+    )values(
+    #{id},
+    #{aid},
+    #{uid},
+    #{returnTime},
+    #{status},
+    #{createTime}
+    )
+    </insert>
+
+
+    <!--根据id删除-->
+    <delete id="deleteReturns" >
+    delete from returns where id=#{id}
+    </delete>
+
+
+    <!--根据ID查询-->
+    <select id="findReturnsById" resultMap="BaseResultMap" >
+    select
+    <include refid="Base_Column_List" />
+    from returns where id=#{id}
+    </select>
+
+
+    <!--修改-->
+    <update id="updateReturns" parameterType="com.javaee.lqsx.asset.po.Returns">
+    update returns
+    <set>
+        <if test="aid != null">
+            aid = #{aid},
+        </if>
+        <if test="uid != null">
+            uid = #{uid},
+        </if>
+        <if test="returnTime != null">
+            return_time = #{returnTime},
+        </if>
+        <if test="status != null">
+            status = #{status},
+        </if>
+        <if test="createTime != null">
+            create_time = #{createTime},
+        </if>
+    </set>
+    where id = #{id}
+    </update>
+
+
+    <!--查询全部-->
+    <select id="getAll" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from returns
+    order by create_time desc
+    </select>
+
+    <!--查询全部-->
+    <select id="queryFilter" resultMap="BaseResultMap" parameterType="map">
+    select
+    <include refid="Base_Column_List" />
+    from returns
+    where 1=1
+    <if test="id != null and id != '' ">
+        and id = #{id}
+    </if>
+    <if test="aid != null and aid != '' ">
+        and aid = #{aid}
+    </if>
+    <if test="uid != null and uid != '' ">
+        and uid = #{uid}
+    </if>
+    <if test="returnTime != null and returnTime != '' ">
+        and return_time = #{returnTime}
+    </if>
+    <if test="status != null and status != '' ">
+        and status = #{status}
+    </if>
+    <if test="createTime != null and createTime != '' ">
+        and create_time = #{createTime}
+    </if>
+     order by create_time desc
+    </select>
+</mapper>

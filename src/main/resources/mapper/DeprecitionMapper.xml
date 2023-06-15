@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.javaee.lqsx.asset.mapper.DeprecitionMapper" >
+
+    <resultMap id="BaseResultMap" type="com.javaee.lqsx.asset.po.Deprecition">
+        <id column="id" jdbcType="VARCHAR" property="id" />
+        <result column="aid" jdbcType="VARCHAR" property="aid" />
+        <result column="mid" jdbcType="VARCHAR" property="mid" />
+        <result column="info" jdbcType="VARCHAR" property="info" />
+        <result column="remark" jdbcType="VARCHAR" property="remark" />
+        <result column="repair_time" jdbcType="VARCHAR" property="repairTime" />
+        <result column="status" jdbcType="VARCHAR" property="status" />
+        <result column="create_time" jdbcType="VARCHAR" property="createTime" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,
+        aid,
+        mid,
+        info,
+        remark,
+        repair_time,
+        status,
+        create_time
+    </sql>
+
+
+    <!--分页查询-->
+    <select id="getDeprecitionList" parameterType="Integer" resultType="com.javaee.lqsx.asset.po.Deprecition">
+    select
+    d.id,
+    d.aid,
+    d.mid,
+    d.info,
+    d.remark,
+    d.repair_time repairTime,
+    d.status,
+    d.create_time createTime,
+    u.name uname,
+    m.name mname,
+    a.name aname
+    from deprecition d left join user u on d.info = u.id left join manage m on d.mid = m.id left join assets a on a.id = d.aid
+    where 1=1
+    <if test="aid != null and aid != ''">
+        and d.aid = #{aid}
+    </if>
+    <if test="uid != null and uid != ''">
+        and d.info = #{uid}
+    </if>
+    <if test="mid != null and mid != ''">
+        and d.mid = #{mid}
+    </if>
+    order by d.create_time desc
+    limit #{currentPage},#{pageSize}
+    </select>
+
+
+    <!--查询总数-->
+    <select id="totalCount"  resultType="Integer">
+    select count(d.id)
+    from deprecition d left join user u on d.info = u.id left join manage m on d.mid = m.id left join assets a on a.id = d.aid
+    where 1=1
+    <if test="aid != null and aid != ''">
+        and d.aid = #{aid}
+    </if>
+    <if test="uid != null and uid != ''">
+        and d.info = #{uid}
+    </if>
+    <if test="mid != null and mid != ''">
+        and d.mid = #{mid}
+    </if>
+    </select>
+
+
+    <!--添加-->
+    <insert id="addDeprecition" parameterType="com.javaee.lqsx.asset.po.Deprecition" keyProperty="id" useGeneratedKeys="true">
+    insert into deprecition (
+    id,
+    aid,
+    mid,
+    info,
+    remark,
+    repair_time,
+    status,
+    create_time
+    )values(
+    #{id},
+    #{aid},
+    #{mid},
+    #{info},
+    #{remark},
+    #{repairTime},
+    #{status},
+    #{createTime}
+    )
+    </insert>
+
+
+    <!--根据id删除-->
+    <delete id="deleteDeprecition" >
+    delete from deprecition where id=#{id}
+    </delete>
+
+
+    <!--根据ID查询-->
+    <select id="findDeprecitionById" resultMap="BaseResultMap" >
+    select
+    <include refid="Base_Column_List" />
+    from deprecition where id=#{id}
+    </select>
+
+
+    <!--修改-->
+    <update id="updateDeprecition" parameterType="com.javaee.lqsx.asset.po.Deprecition">
+    update deprecition
+    <set>
+        <if test="aid != null">
+            aid = #{aid},
+        </if>
+        <if test="mid != null">
+            mid = #{mid},
+        </if>
+        <if test="info != null">
+            info = #{info},
+        </if>
+        <if test="remark != null">
+            remark = #{remark},
+        </if>
+        <if test="repairTime != null">
+            repair_time = #{repairTime},
+        </if>
+        <if test="status != null">
+            status = #{status},
+        </if>
+        <if test="createTime != null">
+            create_time = #{createTime},
+        </if>
+    </set>
+    where id = #{id}
+    </update>
+
+
+    <!--查询全部-->
+    <select id="getAll" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from deprecition
+    order by create_time desc
+    </select>
+
+    <!--查询全部-->
+    <select id="queryFilter" resultType="com.javaee.lqsx.asset.po.Deprecition" parameterType="map">
+        select
+        d.id,
+        d.aid,
+        d.mid,
+        d.info,
+        d.remark,
+        d.repair_time repairTime,
+        d.status,
+        d.create_time createTime,
+        u.name uname,
+        m.name mname,
+        a.name aname
+        from deprecition d left join user u on d.info = u.id left join manage m on d.mid = m.id left join assets a on a.id = d.aid
+        where 1=1
+        <if test="aid != null and aid != ''">
+            and d.aid = #{aid}
+        </if>
+        <if test="uid != null and uid != ''">
+            and d.info = #{uid}
+        </if>
+        <if test="mid != null and mid != ''">
+            and d.mid = #{mid}
+        </if>
+        order by d.create_time desc
+    </select>
+</mapper>

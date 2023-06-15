@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.javaee.lqsx.asset.mapper.RecipientsMapper" >
+
+    <resultMap id="BaseResultMap" type="com.javaee.lqsx.asset.po.Recipients">
+        <id column="id" jdbcType="VARCHAR" property="id" />
+        <result column="aid" jdbcType="VARCHAR" property="aid" />
+        <result column="uid" jdbcType="VARCHAR" property="uid" />
+        <result column="apply_time" jdbcType="VARCHAR" property="applyTime" />
+        <result column="status" jdbcType="VARCHAR" property="status" />
+        <result column="create_time" jdbcType="VARCHAR" property="createTime" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,
+        aid,
+        uid,
+        apply_time,
+        status,
+        create_time
+    </sql>
+
+
+    <!--分页查询-->
+    <select id="getRecipientsList" parameterType="Integer" resultType="com.javaee.lqsx.asset.po.Recipients">
+    select
+    r.id,
+    r.aid,
+    r.uid,
+    r.apply_time applyTime,
+    r.status,
+    r.create_time createTime,
+    a.name aname,
+    u.name uname
+    from recipients r left join assets a on r.aid = a.id left join user u on r.uid = u.id
+    where 1=1
+    <if test="aid != null and aid != ''">
+        and r.aid = #{aid}
+    </if>
+    <if test="uid != null and uid != ''">
+        and r.uid = #{uid}
+    </if>
+    <if test="mid != null and mid != ''">
+        and a.mid = #{mid}
+    </if>
+    order by r.create_time desc
+    limit #{currentPage},#{pageSize}
+    </select>
+
+
+    <!--查询总数-->
+    <select id="totalCount"  resultType="Integer">
+    select count(id) from recipients
+    </select>
+
+
+    <!--添加-->
+    <insert id="addRecipients" parameterType="com.javaee.lqsx.asset.po.Recipients" keyProperty="id" useGeneratedKeys="true">
+    insert into recipients (
+    id,
+    aid,
+    uid,
+    apply_time,
+    status,
+    create_time
+    )values(
+    #{id},
+    #{aid},
+    #{uid},
+    #{applyTime},
+    #{status},
+    #{createTime}
+    )
+    </insert>
+
+
+    <!--根据id删除-->
+    <delete id="deleteRecipients" >
+    delete from recipients where id=#{id}
+    </delete>
+
+
+    <!--根据ID查询-->
+    <select id="findRecipientsById" resultMap="BaseResultMap" >
+    select
+    <include refid="Base_Column_List" />
+    from recipients where id=#{id}
+    </select>
+
+
+    <!--修改-->
+    <update id="updateRecipients" parameterType="com.javaee.lqsx.asset.po.Recipients">
+    update recipients
+    <set>
+        <if test="aid != null">
+            aid = #{aid},
+        </if>
+        <if test="uid != null">
+            uid = #{uid},
+        </if>
+        <if test="applyTime != null">
+            apply_time = #{applyTime},
+        </if>
+        <if test="status != null">
+            status = #{status},
+        </if>
+        <if test="createTime != null">
+            create_time = #{createTime},
+        </if>
+    </set>
+    where id = #{id}
+    </update>
+
+
+    <!--查询全部-->
+    <select id="getAll" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from recipients
+    order by create_time desc
+    </select>
+
+    <!--查询全部-->
+    <select id="queryFilter" resultType="com.javaee.lqsx.asset.po.Recipients" parameterType="map">
+    select
+    r.id,
+    r.aid,
+    r.uid,
+    r.apply_time applyTime,
+    r.status,
+    r.create_time createTime,
+    a.name aname,
+    u.name uname
+    from recipients r left join assets a on r.aid = a.id left join user u on r.uid = u.id
+    where 1=1
+    <if test="id != null and id != '' ">
+        and r.id = #{id}
+    </if>
+    <if test="aid != null and aid != '' ">
+        and r.aid = #{aid}
+    </if>
+    <if test="uid != null and uid != '' ">
+        and r.uid = #{uid}
+    </if>
+    <if test="applyTime != null and applyTime != '' ">
+        and r.apply_time = #{applyTime}
+    </if>
+    <if test="status != null and status != '' ">
+        and r.status = #{status}
+    </if>
+    <if test="status1 != null and status1 != '' ">
+        and r.status in ('01','02')
+    </if>
+    <if test="mid != null and mid != '' ">
+        and a.mid = #{mid}
+    </if>
+    <if test="createTime != null and createTime != '' ">
+        and r.create_time = #{createTime}
+    </if>
+     order by r.create_time desc
+    </select>
+</mapper>

@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.javaee.lqsx.asset.mapper.AssetsMapper" >
+
+    <resultMap id="BaseResultMap" type="com.javaee.lqsx.asset.po.Assets">
+        <id column="id" jdbcType="VARCHAR" property="id" />
+        <result column="no" jdbcType="VARCHAR" property="no" />
+        <result column="asset_no" jdbcType="VARCHAR" property="assetNo" />
+        <result column="name" jdbcType="VARCHAR" property="name" />
+        <result column="money" jdbcType="VARCHAR" property="money" />
+        <result column="vendor" jdbcType="VARCHAR" property="vendor" />
+        <result column="product_time" jdbcType="VARCHAR" property="productTime" />
+        <result column="into_time" jdbcType="VARCHAR" property="intoTime" />
+        <result column="mid" jdbcType="VARCHAR" property="mid" />
+        <result column="asset_type" jdbcType="VARCHAR" property="assetType" />
+        <result column="status" jdbcType="VARCHAR" property="status" />
+        <result column="create_time" jdbcType="VARCHAR" property="createTime" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,
+        no,
+        asset_no,
+        name,
+        money,
+        vendor,
+        product_time,
+        into_time,
+        mid,
+        asset_type,
+        status,
+        create_time
+    </sql>
+
+
+    <!--分页查询-->
+    <select id="getAssetsList" parameterType="Integer" resultType="com.javaee.lqsx.asset.po.Assets">
+        select
+        a.id,
+        a.no,
+        a.asset_no assetNo,
+        a.name,
+        a.money,
+        a.vendor,
+        a.product_time productTime,
+        a.into_time intoTime,
+        a.mid,
+        a.asset_type assetType,
+        a.status,
+        a.create_time createTime,
+        m.name mname
+        from assets a left join manage m on a.mid = m.id
+        where 1=1
+        <if test="mid != null and mid != '' ">
+            and a.mid = #{mid}
+        </if>
+        <if test="no != null and no != ''">
+            and a.no = #{no}
+        </if>
+        <if test="name != null and name != ''">
+            and a.name like concat('%',#{name},'%')
+        </if>
+        order by a.create_time desc
+        limit #{currentPage},#{pageSize}
+    </select>
+
+
+    <!--查询总数-->
+    <select id="totalCount"  resultType="Integer">
+    select count(id) from assets
+    </select>
+
+
+    <!--添加-->
+    <insert id="addAssets" parameterType="com.javaee.lqsx.asset.po.Assets" keyProperty="id" useGeneratedKeys="true">
+    insert into assets (
+    id,
+    no,
+    asset_no,
+    name,
+    money,
+    vendor,
+    product_time,
+    into_time,
+    mid,
+    asset_type,
+    status,
+    create_time
+    )values(
+    #{id},
+    #{no},
+    #{assetNo},
+    #{name},
+    #{money},
+    #{vendor},
+    #{productTime},
+    #{intoTime},
+    #{mid},
+    #{assetType},
+    #{status},
+    #{createTime}
+    )
+    </insert>
+
+
+    <!--根据id删除-->
+    <delete id="deleteAssets" >
+    delete from assets where id=#{id}
+    </delete>
+
+
+    <!--根据ID查询-->
+    <select id="findAssetsById" resultMap="BaseResultMap" >
+    select
+    <include refid="Base_Column_List" />
+    from assets where id=#{id}
+    </select>
+
+
+    <!--修改-->
+    <update id="updateAssets" parameterType="com.javaee.lqsx.asset.po.Assets">
+    update assets
+    <set>
+        <if test="no != null">
+            no = #{no},
+        </if>
+        <if test="assetNo != null">
+            asset_no = #{assetNo},
+        </if>
+        <if test="name != null">
+            name = #{name},
+        </if>
+        <if test="money != null">
+            money = #{money},
+        </if>
+        <if test="vendor != null">
+            vendor = #{vendor},
+        </if>
+        <if test="productTime != null">
+            product_time = #{productTime},
+        </if>
+        <if test="intoTime != null">
+            into_time = #{intoTime},
+        </if>
+        <if test="mid != null">
+            mid = #{mid},
+        </if>
+        <if test="assetType != null">
+            asset_type = #{assetType},
+        </if>
+        <if test="status != null">
+            status = #{status},
+        </if>
+        <if test="createTime != null">
+            create_time = #{createTime},
+        </if>
+    </set>
+    where id = #{id}
+    </update>
+
+
+    <!--查询全部-->
+    <select id="getAll" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from assets
+    order by create_time desc
+    </select>
+
+    <!--查询全部-->
+    <select id="queryFilter" resultMap="BaseResultMap" parameterType="map">
+    select
+    <include refid="Base_Column_List" />
+    from assets
+    where 1=1
+    <if test="id != null and id != '' ">
+        and id = #{id}
+    </if>
+    <if test="uid != null and uid != '' ">
+        and id in (select aid from recipients where status = '02' and uid = #{uid})
+    </if>
+    <if test="no != null and no != '' ">
+        and no = #{no}
+    </if>
+    <if test="assetNo != null and assetNo != '' ">
+        and asset_no = #{assetNo}
+    </if>
+    <if test="name != null and name != '' ">
+        and name = #{name}
+    </if>
+    <if test="money != null and money != '' ">
+        and money = #{money}
+    </if>
+    <if test="vendor != null and vendor != '' ">
+        and vendor = #{vendor}
+    </if>
+    <if test="productTime != null and productTime != '' ">
+        and product_time = #{productTime}
+    </if>
+    <if test="intoTime != null and intoTime != '' ">
+        and into_time = #{intoTime}
+    </if>
+    <if test="mid != null and mid != '' ">
+        and mid = #{mid}
+    </if>
+    <if test="assetType != null and assetType != '' ">
+        and asset_type = #{assetType}
+    </if>
+    <if test="status != null and status != '' ">
+        and status = #{status}
+    </if>
+    <if test="createTime != null and createTime != '' ">
+        and create_time = #{createTime}
+    </if>
+     order by create_time desc
+    </select>
+</mapper>

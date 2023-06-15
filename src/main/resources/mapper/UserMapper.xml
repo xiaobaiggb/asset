@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.javaee.lqsx.asset.mapper.UserMapper" >
+
+    <resultMap id="BaseResultMap" type="com.javaee.lqsx.asset.po.User">
+        <id column="id" jdbcType="VARCHAR" property="id" />
+        <result column="no" jdbcType="VARCHAR" property="no" />
+        <result column="image" jdbcType="VARCHAR" property="image" />
+        <result column="name" jdbcType="VARCHAR" property="name" />
+        <result column="sex" jdbcType="VARCHAR" property="sex" />
+        <result column="age" jdbcType="VARCHAR" property="age" />
+        <result column="password" jdbcType="VARCHAR" property="password" />
+        <result column="dept" jdbcType="VARCHAR" property="dept" />
+        <result column="position" jdbcType="VARCHAR" property="position" />
+        <result column="address" jdbcType="VARCHAR" property="address" />
+        <result column="phone" jdbcType="VARCHAR" property="phone" />
+        <result column="situation" jdbcType="VARCHAR" property="situation" />
+        <result column="create_time" jdbcType="VARCHAR" property="createTime" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,
+        no,
+        image,
+        name,
+        sex,
+        age,
+        password,
+        dept,
+        position,
+        address,
+        phone,
+        situation,
+        create_time
+    </sql>
+
+
+    <!--分页查询-->
+    <select id="getUserList" parameterType="Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from user
+    where 1=1
+    <if test="no != null and no != ''">
+        and no = #{no}
+    </if>
+    <if test="name != null and name != ''">
+        and name like concat('%',#{name},'%')
+    </if>
+    order by create_time desc
+    limit #{currentPage},#{pageSize}
+    </select>
+
+
+    <!--查询总数-->
+    <select id="totalCount"  resultType="Integer">
+    select count(id) from user
+    </select>
+
+
+    <!--添加-->
+    <insert id="addUser" parameterType="com.javaee.lqsx.asset.po.User" keyProperty="id" useGeneratedKeys="true">
+    insert into user (
+    id,
+    no,
+    image,
+    name,
+    sex,
+    age,
+    password,
+    dept,
+    position,
+    address,
+    phone,
+    situation,
+    create_time
+    )values(
+    #{id},
+    #{no},
+    #{image},
+    #{name},
+    #{sex},
+    #{age},
+    #{password},
+    #{dept},
+    #{position},
+    #{address},
+    #{phone},
+    #{situation},
+    #{createTime}
+    )
+    </insert>
+
+
+    <!--根据id删除-->
+    <delete id="deleteUser" >
+    delete from user where id=#{id}
+    </delete>
+
+
+    <!--根据ID查询-->
+    <select id="findUserById" resultMap="BaseResultMap" >
+    select
+    <include refid="Base_Column_List" />
+    from user where id=#{id}
+    </select>
+
+
+    <!--修改-->
+    <update id="updateUser" parameterType="com.javaee.lqsx.asset.po.User">
+    update user
+    <set>
+        <if test="no != null">
+            no = #{no},
+        </if>
+        <if test="image != null">
+            image = #{image},
+        </if>
+        <if test="name != null">
+            name = #{name},
+        </if>
+        <if test="sex != null">
+            sex = #{sex},
+        </if>
+        <if test="age != null">
+            age = #{age},
+        </if>
+        <if test="password != null">
+            password = #{password},
+        </if>
+        <if test="dept != null">
+            dept = #{dept},
+        </if>
+        <if test="position != null">
+            position = #{position},
+        </if>
+        <if test="address != null">
+            address = #{address},
+        </if>
+        <if test="phone != null">
+            phone = #{phone},
+        </if>
+        <if test="situation != null">
+            situation = #{situation},
+        </if>
+        <if test="createTime != null">
+            create_time = #{createTime},
+        </if>
+    </set>
+    where id = #{id}
+    </update>
+
+
+    <!--查询全部-->
+    <select id="getAll" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from user
+    order by create_time desc
+    </select>
+
+    <!--查询全部-->
+    <select id="queryFilter" resultMap="BaseResultMap" parameterType="map">
+    select
+    <include refid="Base_Column_List" />
+    from user
+    where 1=1
+    <if test="id != null and id != '' ">
+        and id = #{id}
+    </if>
+    <if test="no != null and no != '' ">
+        and no = #{no}
+    </if>
+    <if test="image != null and image != '' ">
+        and image = #{image}
+    </if>
+    <if test="name != null and name != '' ">
+        and name = #{name}
+    </if>
+    <if test="sex != null and sex != '' ">
+        and sex = #{sex}
+    </if>
+    <if test="age != null and age != '' ">
+        and age = #{age}
+    </if>
+    <if test="password != null and password != '' ">
+        and password = #{password}
+    </if>
+    <if test="dept != null and dept != '' ">
+        and dept = #{dept}
+    </if>
+    <if test="position != null and position != '' ">
+        and position = #{position}
+    </if>
+    <if test="address != null and address != '' ">
+        and address = #{address}
+    </if>
+    <if test="phone != null and phone != '' ">
+        and phone = #{phone}
+    </if>
+    <if test="situation != null and situation != '' ">
+        and situation = #{situation}
+    </if>
+    <if test="createTime != null and createTime != '' ">
+        and create_time = #{createTime}
+    </if>
+     order by create_time desc
+    </select>
+</mapper>

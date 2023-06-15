@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.javaee.lqsx.asset.mapper.AdminMapper" >
+
+    <resultMap id="BaseResultMap" type="com.javaee.lqsx.asset.po.Admin">
+        <id column="id" jdbcType="VARCHAR" property="id" />
+        <result column="no" jdbcType="VARCHAR" property="no" />
+        <result column="password" jdbcType="VARCHAR" property="password" />
+        <result column="create_time" jdbcType="VARCHAR" property="createTime" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,
+        no,
+        password,
+        create_time
+    </sql>
+
+
+    <!--分页查询-->
+    <select id="getAdminList" parameterType="Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from admin
+    where 1=1
+    <if test="no != null and no != ''">
+        and no = #{no}
+    </if>
+    order by create_time desc
+    limit #{currentPage},#{pageSize}
+    </select>
+
+
+    <!--查询总数-->
+    <select id="totalCount"  resultType="Integer">
+    select count(id) from admin
+    </select>
+
+
+    <!--添加-->
+    <insert id="addAdmin" parameterType="com.javaee.lqsx.asset.po.Admin" keyProperty="id" useGeneratedKeys="true">
+    insert into admin (
+    id,
+    no,
+    password,
+    create_time
+    )values(
+    #{id},
+    #{no},
+    #{password},
+    #{createTime}
+    )
+    </insert>
+
+
+    <!--根据id删除-->
+    <delete id="deleteAdmin" >
+    delete from admin where id=#{id}
+    </delete>
+
+
+    <!--根据ID查询-->
+    <select id="findAdminById" resultMap="BaseResultMap" >
+    select
+    <include refid="Base_Column_List" />
+    from admin where id=#{id}
+    </select>
+
+
+    <!--修改-->
+    <update id="updateAdmin" parameterType="com.javaee.lqsx.asset.po.Admin">
+    update admin
+    <set>
+        <if test="no != null">
+            no = #{no},
+        </if>
+        <if test="password != null">
+            password = #{password},
+        </if>
+        <if test="createTime != null">
+            create_time = #{createTime},
+        </if>
+    </set>
+    where id = #{id}
+    </update>
+
+
+    <!--查询全部-->
+    <select id="getAll" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from admin
+    order by create_time desc
+    </select>
+
+    <!--查询全部-->
+    <select id="queryFilter" resultMap="BaseResultMap" parameterType="map">
+    select
+    <include refid="Base_Column_List" />
+    from admin
+    where 1=1
+    <if test="id != null and id != '' ">
+        and id = #{id}
+    </if>
+    <if test="no != null and no != '' ">
+        and no = #{no}
+    </if>
+    <if test="password != null and password != '' ">
+        and password = #{password}
+    </if>
+    <if test="createTime != null and createTime != '' ">
+        and create_time = #{createTime}
+    </if>
+     order by create_time desc
+    </select>
+</mapper>
